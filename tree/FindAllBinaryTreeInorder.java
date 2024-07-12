@@ -1,51 +1,93 @@
 package tree;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 public class FindAllBinaryTreeInorder {
 	
+	static Scanner sc = new Scanner(System.in);
+	static int length;
+	static int[] inorder;
+	static HashMap<Integer, Integer> hm;
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+		length = sc.nextInt();
 		
-		int size = sc.nextInt();
+		inorder = new int[length];
 		
-		List<Integer> inorder = new ArrayList<>();
+		int[] preorder = new int[length];
+
+		hm = new HashMap<>();
 		
-		for (int i = 0; i < size; i++) {
-			int data = sc.nextInt();
-			inorder.add(data);
+		for (int i = 0; i < length; i++) {
+			inorder[i] = i;
+			hm.put(i, i);
 		}
-		
-		findAllBinaryTreeInorder(inorder);
-	}
 
-	private static void findAllBinaryTreeInorder(List<Integer> inorder) {
-
-		for (int i = 0; i < inorder.size(); i++) 
-			findPreorder(i, inorder, 0, inorder.size() - 1);
-		
-	}
-
-	private static void findPreorder(int rootIndex, List<Integer> inorder, int start, int end) {
-		
-		if (start < 0 || end < 0) return;
-		
-		if (start == end) {
-			System.out.println(inorder.get(start) + " ");
-			return;
-		}
-		
-		System.out.println(inorder.get(rootIndex) + " ");
-		
-		//left
-		findPreorder(rootIndex, inorder, start, rootIndex - 1);
-				
-		//right
-		findPreorder(rootIndex, inorder, rootIndex + 1, end);
+		Rec(preorder, 0);
 	}
 	
+	static int count = 1;
+	
+	static void print(int[] preorder) { 
+		System.out.print(count + "-");
+		count++;
+		for (int a : preorder) {
+			System.out.print(a + " ");
+		}
+		System.out.println();
+	}
+	
+	static boolean check(int[] preorder, int k, int v) {
+		for (int i = 0; i < k; i++) {
+			if (preorder[i] == v) return false;
+		}
+		
+		return true;
+	}
+	
+	static void Rec(int[] preorder, int k) {
+		for (int i = 0; i < length; i++) {
+			
+			if (check(preorder, k, inorder[i])) {
+				
+				preorder[k] = inorder[i];
+				
+				if (k == length - 1) {
+					
+					if(canBuild(preorder, 0, k)) {
+					print(preorder);
+					}
+
+					preIndex = 0;
+				}
+				else
+					Rec(preorder, k + 1);
+			}
+		}
+	}
+	
+	static int preIndex = 0;
+	static boolean canBuild(int[] preorder, int start, int end) {
+
+		if (start > end) return true;
+		
+		if (start == end) {
+			if (preorder[preIndex++] == inorder[start]) {
+				return true;
+			}
+			return false;
+		}
+
+		int inIndex = hm.get(preorder[preIndex++]);
+		
+		if (inIndex > end || inIndex < start) return false;
+		
+		boolean left = canBuild(preorder, start, inIndex - 1);
+		if (left == false) return false;
+		
+		return canBuild(preorder, inIndex + 1, end);
+	}
 	
 }

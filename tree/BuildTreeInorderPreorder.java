@@ -35,7 +35,10 @@ public class BuildTreeInorderPreorder {
 		
 		Node root = new Node(pre[pIndex]);
 		
-		if (start == end) return root;
+		if (start == end) {
+			pIndex++;
+			return root;
+		}
 		
 		int iIndex = hm.get(pre[pIndex++]);
 		
