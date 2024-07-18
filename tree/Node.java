@@ -1,6 +1,6 @@
 package tree;
 
-public class Node {
+public class Node implements Comparable<Node>{
 	public Integer data;
 	public String value;
 	public Node left, right;
@@ -30,5 +30,11 @@ public class Node {
 		if (root == null) return 0;
 		
 		return root.data + getAllData(root.left) + getAllData(root.right);
+	}
+
+	@Override
+	public int compareTo(Node that) {
+		// TODO Auto-generated method stub
+		return this.data - that.data;
 	}
 }
