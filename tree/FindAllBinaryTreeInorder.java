@@ -1,93 +1,60 @@
 package tree;
 
-import java.util.ArrayList; 
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class FindAllBinaryTreeInorder {
-	
-	static Scanner sc = new Scanner(System.in);
-	static int length;
-	static int[] inorder;
-	static HashMap<Integer, Integer> hm;
+
 	public static void main(String[] args) {
-		length = sc.nextInt();
+		Scanner sc = new Scanner(System.in);
 		
-		inorder = new int[length];
+		int length = sc.nextInt();
 		
-		int[] preorder = new int[length];
-
-		hm = new HashMap<>();
+		int[] inorder = new int[length];
 		
-		for (int i = 0; i < length; i++) {
-			inorder[i] = i;
-			hm.put(i, i);
-		}
-
-		Rec(preorder, 0);
-	}
-	
-	static int count = 1;
-	
-	static void print(int[] preorder) { 
-		System.out.print(count + "-");
-		count++;
-		for (int a : preorder) {
-			System.out.print(a + " ");
-		}
-		System.out.println();
-	}
-	
-	static boolean check(int[] preorder, int k, int v) {
-		for (int i = 0; i < k; i++) {
-			if (preorder[i] == v) return false;
+		for (int i = 0; i < length; i++) 
+			inorder[i] = sc.nextInt();
+		
+		ArrayList<Node> trees = findAllBinaryTree(inorder, 0, length - 1);
+		
+		for (Node root : trees) {
+			Traversal.preorder(root, true);
+			System.out.println();
 		}
 		
-		return true;
 	}
 	
-	static void Rec(int[] preorder, int k) {
-		for (int i = 0; i < length; i++) {
+	static ArrayList<Node> findAllBinaryTree(int[] inorder, int start, int end) {
+		
+		ArrayList<Node> trees = new ArrayList<Node>();
+		
+		if (start > end) {
+			trees.add(null);
+			return trees;
+		}
+		
+		for (int i = start; i <= end; i++) {
 			
-			if (check(preorder, k, inorder[i])) {
-				
-				preorder[k] = inorder[i];
-				
-				if (k == length - 1) {
+			ArrayList<Node> leftTree = findAllBinaryTree(inorder, start, i - 1);
+			
+			ArrayList<Node> rightTree = findAllBinaryTree(inorder, i + 1, end);
+			
+			for (int j = 0; j < leftTree.size(); j++) {
+				for (int k = 0; k < rightTree.size(); k++) {
 					
-					if(canBuild(preorder, 0, k)) {
-					print(preorder);
-					}
-
-					preIndex = 0;
+					Node root = new Node(inorder[i]);
+					
+					root.left = leftTree.get(j);
+					
+					root.right = rightTree.get(k);
+					
+					trees.add(root);
 				}
-				else
-					Rec(preorder, k + 1);
 			}
+			
 		}
+		
+		return trees;
 	}
-	
-	static int preIndex = 0;
-	static boolean canBuild(int[] preorder, int start, int end) {
-
-		if (start > end) return true;
-		
-		if (start == end) {
-			if (preorder[preIndex++] == inorder[start]) {
-				return true;
-			}
-			return false;
-		}
-
-		int inIndex = hm.get(preorder[preIndex++]);
-		
-		if (inIndex > end || inIndex < start) return false;
-		
-		boolean left = canBuild(preorder, start, inIndex - 1);
-		if (left == false) return false;
-		
-		return canBuild(preorder, inIndex + 1, end);
-	}
-	
 }
