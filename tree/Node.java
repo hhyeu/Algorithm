@@ -20,16 +20,16 @@ public class Node implements Comparable<Node>{
 		this.left = this.right = null;
 	}
 	
-	public int getNodes(Node root) {
+	public int countNumOfNodes(Node root) {
 		if (root == null) return 0;
 		
-		return 1 + getNodes(root.left) + getNodes(root.right);
+		return 1 + countNumOfNodes(root.left) + countNumOfNodes(root.right);
 	}
 	
-	public int getAllData(Node root) {
+	public int countAllData(Node root) {
 		if (root == null) return 0;
 		
-		return root.data + getAllData(root.left) + getAllData(root.right);
+		return root.data + countAllData(root.left) + countAllData(root.right);
 	}
 
 	@Override
